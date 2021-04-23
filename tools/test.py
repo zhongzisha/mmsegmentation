@@ -121,6 +121,9 @@ def main():
     model.CLASSES = checkpoint['meta']['CLASSES']
     model.PALETTE = checkpoint['meta']['PALETTE']
 
+    model.CLASSES = ['bg', 'line']
+    model.PALETTE = [[0, 0, 0], [255, 255, 255]]
+
     efficient_test = False
     if args.eval_options is not None:
         efficient_test = args.eval_options.get('efficient_test', False)
