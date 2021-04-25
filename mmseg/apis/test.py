@@ -36,7 +36,8 @@ def single_gpu_test(model,
                     show=False,
                     out_dir=None,
                     efficient_test=False,
-                    opacity=0.5):
+                    opacity=0.5,
+                    return_results=True):
     """Test with single GPU.
 
     Args:
@@ -59,10 +60,8 @@ def single_gpu_test(model,
     dataset = data_loader.dataset
     prog_bar = mmcv.ProgressBar(len(dataset))
     for i, data in enumerate(data_loader):
-        print(i)
         with torch.no_grad():
             result = model(return_loss=False, **data)
-        print('done')
         if show or out_dir:
             img_tensor = data['img'][0]
             img_metas = data['img_metas'][0].data[0]
@@ -70,7 +69,6 @@ def single_gpu_test(model,
             assert len(imgs) == len(img_metas)
 
             for img, img_meta in zip(imgs, img_metas):
-                print(img_meta['ori_filename'])
                 h, w, _ = img_meta['img_shape']
                 img_show = img[:h, :w, :]
 
@@ -90,18 +88,19 @@ def single_gpu_test(model,
                     out_file=out_file,
                     opacity=opacity)
 
-        if isinstance(result, list):
-            if efficient_test:
-                result = [np2tmp(_) for _ in result]
-            results.extend(result)
-        else:
-            if efficient_test:
-                result = np2tmp(result)
-            results.append(result)
+        if return_results:
+            if isinstance(result, list):
+                if efficient_test:
+                    result = [np2tmp(_) for _ in result]
+                results.extend(result)
+            else:
+                if efficient_test:
+                    result = np2tmp(result)
+                results.append(result)
 
         batch_size = data['img'][0].size(0)
-        # for _ in range(batch_size):
-        #     prog_bar.update()
+        for _ in range(batch_size):
+            prog_bar.update()
     return results
 
 
