@@ -34,9 +34,10 @@ from yoloV5.utils.torch_utils import select_device, time_synchronized
 export PYTHONPATH=/media/ubuntu/Data/gd/:$PYTHONPATH
 python demo/detect_gd_line.py \
 --source /media/ubuntu/Data/gd_1024_aug_90_newSplit_4classes/val/val_list.txt \
---checkpoint work_dirs/fcn_hr18_512x512_20k_gd_lineseg512/latest.pth \
---config work_dirs/fcn_hr18_512x512_20k_gd_lineseg512/fcn_hr18_512x512_20k_gd_lineseg512.py \
---img-size 512 --gap 16
+--checkpoint /media/ubuntu/Temp/gd/mmsegmentation/work_dirs/fcn_hr18_512x512_20k_gd_lineseg512/latest.pth \
+--config /media/ubuntu/Temp/gd/mmsegmentation/work_dirs/fcn_hr18_512x512_20k_gd_lineseg512/fcn_hr18_512x512_20k_gd_lineseg512.py \
+--save-dir /media/ubuntu/Temp/gd/mmsegmentation/work_dirs/fcn_hr18_512x512_20k_gd_lineseg512/
+--img-size 512 --gap 16 --batchsize 32
 """
 
 
@@ -66,7 +67,7 @@ def main():
     parser.add_argument('--agnostic-nms', action='store_true', help='class-agnostic NMS')
     parser.add_argument('--augment', action='store_true', help='augmented inference')
     parser.add_argument('--update', action='store_true', help='update all models')
-    parser.add_argument('--project', default='runs/detect', help='save results to project/name')
+    parser.add_argument('--save-dir', default='./', help='save results to project/name')
     parser.add_argument('--name', default='exp', help='save results to project/name')
     parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
 
@@ -80,9 +81,9 @@ def main():
         args.batchsize, args.score_thres, args.hw_thres
 
     # Directories
-    save_dir = Path(args.project)  # increment run
+    save_dir = args.save_dir
     if not os.path.exists(save_dir):
-        save_dir.mkdir(parents=True, exist_ok=True)
+        os.makedirs(save_dir)
 
     names = {0: 'nonline', 1: 'line'}
     colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
@@ -121,7 +122,7 @@ def main():
         print(ti, '=' * 80)
         print(file_prefix)
 
-        mask_savefilename = file_prefix + "_LineSeg_result.png"
+        mask_savefilename = save_dir + '/' + file_prefix + "_LineSeg_result.png"
         if os.path.exists(mask_savefilename):
             continue
 
