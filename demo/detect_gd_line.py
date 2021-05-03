@@ -55,6 +55,7 @@ def main():
     parser.add_argument('--big-subsize', type=int, default=51200, help='inference big-subsize (pixels)')
     parser.add_argument('--gap', type=int, default=128, help='overlap size')
     parser.add_argument('--batchsize', type=int, default=32, help='batch size')
+    parser.add_argument('--subset', type=str, default='test', help='train, val or test')
 
     parser.add_argument('--score-thres', type=float, default=0.25, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')
@@ -79,6 +80,7 @@ def main():
         args.source, args.view_img, args.save_txt, args.img_size, args.gap, \
         args.gt_xml_dir, args.gt_prefix, int(args.gt_subsize), int(args.gt_gap), args.big_subsize, \
         args.batchsize, args.score_thres, args.hw_thres
+    subset = args.subset
 
     # Directories
     save_dir = args.save_dir
@@ -122,7 +124,7 @@ def main():
         print(ti, '=' * 80)
         print(file_prefix)
 
-        mask_savefilename = save_dir + '/' + file_prefix + "_LineSeg_result.png"
+        mask_savefilename = save_dir + '/' + subset + "_" + file_prefix + "_LineSeg_result.png"
         if os.path.exists(mask_savefilename):
             continue
 
