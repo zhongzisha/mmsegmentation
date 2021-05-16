@@ -1,11 +1,11 @@
 norm_cfg = dict(type='SyncBN', requires_grad=True)
-crop_size = (512, 512)
+crop_size = (256, 256)
 model = dict(
     type='EncoderDecoder',
     backbone=dict(
         type='VIT_MLA',
         model_name='vit_large_patch16_384',
-        img_size=512,
+        img_size=256,
         patch_size=16,
         in_chans=3,
         embed_dim=1024,
@@ -23,7 +23,7 @@ model = dict(
         type='VIT_MLAHead',
         in_channels=1024,
         channels=512,
-        img_size=512,
+        img_size=256,
         mla_channels=256,
         mlahead_channels=128,
         num_classes=2,
@@ -37,7 +37,7 @@ model = dict(
             in_channels=256,
             channels=512,
             in_index=0,
-            img_size=512,
+            img_size=256,
             num_classes=2,
             align_corners=False,
             loss_decode=dict(
@@ -47,7 +47,7 @@ model = dict(
             in_channels=256,
             channels=512,
             in_index=1,
-            img_size=512,
+            img_size=256,
             num_classes=2,
             align_corners=False,
             loss_decode=dict(
@@ -57,7 +57,7 @@ model = dict(
             in_channels=256,
             channels=512,
             in_index=2,
-            img_size=512,
+            img_size=256,
             num_classes=2,
             align_corners=False,
             loss_decode=dict(
@@ -67,14 +67,14 @@ model = dict(
             in_channels=256,
             channels=512,
             in_index=3,
-            img_size=512,
+            img_size=256,
             num_classes=2,
             align_corners=False,
             loss_decode=dict(
                 type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.4))
     ],
     train_cfg=dict(),
-    test_cfg = dict(mode='slide', crop_size=crop_size, stride=(341, 341))
+    test_cfg = dict(mode='slide', crop_size=(256, 256), stride=(170, 170))
 )
 
 dataset_type = 'CustomDataset'
@@ -84,7 +84,7 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations'),
-    dict(type='Resize', img_scale=(2048, 512), ratio_range=(0.5, 2.0)),
+    dict(type='Resize', img_scale=(1024, 512), ratio_range=(0.5, 2.0)),
     dict(type='RandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5),
     dict(type='PhotoMetricDistortion'),
@@ -97,7 +97,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(2048, 512),
+        img_scale=(1024, 512),
         # img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
         flip=False,
         transforms=[
@@ -109,15 +109,18 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    samples_per_gpu=4,
-    workers_per_gpu=4,
+    samples_per_gpu=32,
+    workers_per_gpu=8,
     train=dict(
-        type=dataset_type,
-        data_root=data_root,
-        img_dir='train/images',
-        ann_dir='train/annotations',
-        split='train.txt',
-        pipeline=train_pipeline),
+        type='RepeatDataset',
+        times=160000,
+        dataset=dict(
+            type=dataset_type,
+            data_root=data_root,
+            img_dir='train/images',
+            ann_dir='train/annotations',
+            split='train.txt',
+            pipeline=train_pipeline)),
     val=dict(
         type=dataset_type,
         data_root=data_root,
@@ -148,11 +151,11 @@ resume_from = None
 workflow = [('train', 1)]
 cudnn_benchmark = True
 # optimizer
-optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0,
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0,
                  paramwise_cfg=dict(custom_keys={'head': dict(lr_mult=10.)}))
 optimizer_config = dict()
 # learning policy
-lr_config = dict(policy='poly', power=0.9, min_lr=1e-4, by_epoch=False)
+lr_config = dict(policy='poly', power=0.9, min_lr=1e-5, by_epoch=False)
 # runtime settings
 total_iters = 160000
 checkpoint_config = dict(by_epoch=False, interval=16000)
