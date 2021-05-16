@@ -10,7 +10,7 @@ train_pipeline = [
     dict(type='Resize', img_scale=(2048, 512), ratio_range=(0.5, 2.0)),
     dict(type='RandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5),
-    dict(type='PhotoMetricDistortion'),
+    # dict(type='PhotoMetricDistortion'),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size=crop_size, pad_val=0, seg_pad_val=255),
     dict(type='DefaultFormatBundle'),
@@ -37,22 +37,22 @@ data = dict(
     train=dict(
         type=dataset_type,
         data_root=data_root,
-        img_dir='images/train',
-        ann_dir='annotations/train',
+        img_dir='train/images',
+        ann_dir='train/annotations',
         split='train.txt',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
         data_root=data_root,
-        img_dir='images/val',
-        ann_dir='annotations/val',
+        img_dir='val/images',
+        ann_dir='val/annotations',
         split='val.txt',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
         data_root=data_root,
-        img_dir='images/val',
-        ann_dir='annotations/val',
+        img_dir='val/images',
+        ann_dir='val/annotations',
         split='val.txt',
         pipeline=test_pipeline))
 # model settings

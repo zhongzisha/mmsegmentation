@@ -14,3 +14,10 @@ __all__ = [
     'ResNeSt', 'MobileNetV2', 'UNet', 'CGNet', 'MobileNetV3',
     'VisionTransformer'
 ]
+
+try:
+    from .vit_in_SETR import VisionTransformerInSETR
+    from .vit_mla import VIT_MLA
+    __all__ += ['VisionTransformerInSETR', 'VIT_MLA']
+except ImportError:
+    pass
