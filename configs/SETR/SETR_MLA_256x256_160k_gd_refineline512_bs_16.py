@@ -109,7 +109,7 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    samples_per_gpu=32,
+    samples_per_gpu=8,
     workers_per_gpu=8,
     train=dict(
         type='RepeatDataset',
@@ -151,7 +151,7 @@ resume_from = None
 workflow = [('train', 1)]
 cudnn_benchmark = True
 # optimizer
-optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0,
+optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.0,
                  paramwise_cfg=dict(custom_keys={'head': dict(lr_mult=10.)}))
 optimizer_config = dict()
 # learning policy

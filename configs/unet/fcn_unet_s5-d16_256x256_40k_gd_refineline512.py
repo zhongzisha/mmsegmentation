@@ -1,5 +1,5 @@
 # model settings
-crop_size = (512, 512)
+crop_size = (256, 256)
 norm_cfg = dict(type='SyncBN', requires_grad=True)
 model = dict(
     type='EncoderDecoder',
@@ -22,11 +22,12 @@ model = dict(
         upsample_cfg=dict(type='InterpConv'),
         norm_eval=False),
     decode_head=dict(
-        type='PSPHead',
+        type='FCNHead',
         in_channels=64,
         in_index=4,
-        channels=16,
-        pool_scales=(1, 2, 3, 6),
+        channels=64,
+        num_convs=1,
+        concat_input=False,
         dropout_ratio=0.1,
         num_classes=2,
         norm_cfg=norm_cfg,
@@ -48,7 +49,7 @@ model = dict(
             type='CrossEntropyLoss', use_sigmoid=False, loss_weight=0.4)),
     # model training and testing settings
     train_cfg=dict(),
-    test_cfg=dict(mode='whole'))
+    test_cfg=dict(mode='slide', crop_size=(256, 256), stride=(170, 170)))
 
 # dataset settings
 dataset_type = 'CustomDataset'
@@ -88,14 +89,17 @@ data = dict(
     samples_per_gpu=4,
     workers_per_gpu=4,
     train=dict(
-        type=dataset_type,
-        classes=classes,
-        palette=palette,
-        data_root=data_root,
-        img_dir='train/images',
-        ann_dir='train/annotations',
-        split='train.txt',
-        pipeline=train_pipeline),
+        type='RepeatDataset',
+        times=40000,
+        dataset=dict(
+            type=dataset_type,
+            classes=classes,
+            palette=palette,
+            data_root=data_root,
+            img_dir='train/images',
+            ann_dir='train/annotations',
+            split='train.txt',
+            pipeline=train_pipeline)),
     val=dict(
         type=dataset_type,
         classes=classes,
@@ -131,7 +135,7 @@ workflow = [('train', 1)]
 cudnn_benchmark = True
 
 # optimizer
-optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0005)
+optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.0005)
 optimizer_config = dict()
 # learning policy
 lr_config = dict(policy='poly', power=0.9, min_lr=1e-4, by_epoch=False)
