@@ -4,3 +4,4 @@ _base_ = [
 ]
 model = dict(
     decode_head=dict(num_classes=3), auxiliary_head=dict(num_classes=3))
+evaluation = dict(interval=800001, metric='mIoU')
