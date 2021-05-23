@@ -1,6 +1,6 @@
 # dataset settings
 classes = ('building', 'landslide', 'water')
-palette = [[255, 255, 255], [6, 230, 230], [100, 200, 255]]
+palette = [[255, 255, 255], [0, 0, 255], [0, 255, 0]]
 dataset_type = 'CustomDataset'
 data_root = 'data/gd_mc3classes'
 img_norm_cfg = dict(
