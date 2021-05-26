@@ -31,7 +31,7 @@ from myutils import load_gt_from_txt, load_gt_from_esri_xml, py_cpu_nms, \
 
 """
 export PYTHONPATH=/media/ubuntu/Data/gd/:$PYTHONPATH
-python demo/detect_gd_line.py \
+python demo/detect_gd_water.py \
 --source /media/ubuntu/Data/gd_1024_aug_90_newSplit_4classes/val/val_list.txt \
 --checkpoint /media/ubuntu/Temp/gd/mmsegmentation/work_dirs/fcn_hr18_512x512_20k_gd_lineseg512/latest.pth \
 --config /media/ubuntu/Temp/gd/mmsegmentation/work_dirs/fcn_hr18_512x512_20k_gd_lineseg512/fcn_hr18_512x512_20k_gd_lineseg512.py \
@@ -86,11 +86,11 @@ def main():
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
 
-    names = {0: 'nonline', 1: 'line'}
+    names = {0: 'bg', 1: 'water'}
     colors = [[random.randint(0, 255) for _ in range(3)] for _ in names]
     shown_labels = [0, 1]  # 只显示中大型杆塔和绝缘子
 
-    device = select_device(args.device)
+    device = torch.device('cuda:0')
 
     # build the model from a config file and a checkpoint file
     model = init_segmentor(args.config, args.checkpoint, device=args.device)
@@ -245,7 +245,6 @@ def main():
 
         # cv2.imwrite(mask_savefilename, mask)
         cv2.imencode('.png', final_mask)[1].tofile(mask_savefilename)
-
 
 
 if __name__ == '__main__':
