@@ -52,7 +52,7 @@ model = dict(
 
 # dataset settings
 dataset_type = 'CustomDataset'
-data_root = 'data/mc_seg_v5_4classes'
+data_root = 'data/mc_seg_v6_4classes'
 classes = ('bg', 'building', 'water', 'road', 'landslide')
 palette = [[0, 0, 0], [255, 255, 255], [0, 255, 0], [255, 0, 0], [0, 0, 255]]
 img_norm_cfg = dict(
@@ -60,7 +60,7 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations'),
-    dict(type='Resize', img_scale=(1024, 512), ratio_range=(0.5, 1.0)),
+    dict(type='Resize', img_scale=(2048, 512), ratio_range=(0.5, 1.0)),
     dict(type='RandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5),
     dict(type='PhotoMetricDistortion'),
@@ -73,7 +73,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(1024, 512),
+        img_scale=(2048, 512),
         # img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
         flip=False,
         transforms=[

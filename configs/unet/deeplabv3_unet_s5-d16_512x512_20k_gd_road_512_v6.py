@@ -28,7 +28,7 @@ model = dict(
         channels=16,
         dilations=(1, 12, 24, 36),
         dropout_ratio=0.1,
-        num_classes=5,
+        num_classes=2,
         norm_cfg=norm_cfg,
         align_corners=False,
         loss_decode=dict(
@@ -41,7 +41,7 @@ model = dict(
         num_convs=1,
         concat_input=False,
         dropout_ratio=0.1,
-        num_classes=5,
+        num_classes=2,
         norm_cfg=norm_cfg,
         align_corners=False,
         loss_decode=dict(
@@ -52,15 +52,15 @@ model = dict(
 
 # dataset settings
 dataset_type = 'CustomDataset'
-data_root = 'data/mc_seg_v5_4classes'
-classes = ('bg', 'building', 'water', 'road', 'landslide')
-palette = [[0, 0, 0], [255, 255, 255], [0, 255, 0], [255, 0, 0], [0, 0, 255]]
+data_root = 'data/mc_seg_v6_road9'
+classes = ('bg', 'road')
+palette = [[0, 0, 0], [250, 255, 255]]
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations'),
-    dict(type='Resize', img_scale=(1024, 512), ratio_range=(0.5, 1.0)),
+    dict(type='Resize', img_scale=(2048, 512), ratio_range=(0.5, 1.0)),
     dict(type='RandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
     dict(type='RandomFlip', prob=0.5),
     dict(type='PhotoMetricDistortion'),
@@ -73,7 +73,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(1024, 512),
+        img_scale=(2048, 512),
         # img_ratios=[0.5, 0.75, 1.0, 1.25, 1.5, 1.75],
         flip=False,
         transforms=[
@@ -137,5 +137,5 @@ optimizer_config = dict()
 lr_config = dict(policy='poly', power=0.9, min_lr=1e-4, by_epoch=False)
 # runtime settings
 runner = dict(type='IterBasedRunner', max_iters=20000)
-checkpoint_config = dict(by_epoch=False, interval=20000)
-evaluation = dict(interval=20001, metric=['mIoU'])
+checkpoint_config = dict(by_epoch=False, interval=2000)
+evaluation = dict(interval=20001, metric=['mIoU', 'mDice'])
