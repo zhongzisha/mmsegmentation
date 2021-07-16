@@ -1,8 +1,9 @@
 _base_ = [
-    '../_base_/models/fcn_unet_s5-d16.py',
+    '../_base_/models/pspnet_unet_s5-d16.py',
     '../_base_/default_runtime.py',
     '../_base_/schedules/schedule_40k.py'
 ]
+
 # dataset settings
 dataset_type = 'CustomDataset'
 data_root = 'data/gd_line512new'
@@ -11,7 +12,7 @@ palette = [[0, 0, 0], [255, 255, 255]]
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 img_scale = (512, 512)
-crop_size = (512, 512)
+crop_size = (384, 384)
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations'),
@@ -74,6 +75,6 @@ data = dict(
         split='val.txt',
         pipeline=test_pipeline))
 
-model = dict(test_cfg=dict(mode='whole'))
+model = dict(test_cfg=dict(crop_size=(256, 256), stride=(170, 170)))
 evaluation = dict(metric='mDice')
 optimizer = dict(lr=0.01)
