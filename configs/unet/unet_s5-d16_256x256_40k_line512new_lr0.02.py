@@ -116,4 +116,4 @@ data = dict(
         pipeline=test_pipeline))
 
 evaluation = dict(metric='mDice')
-optimizer = dict(lr=0.0001)
+optimizer = dict(lr=0.02)
