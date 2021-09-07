@@ -179,10 +179,6 @@ def main():
 
     if not distributed:
         model = MMDataParallel(model, device_ids=[0])
-<<<<<<< HEAD
-        outputs = single_gpu_test(model, data_loader, args.show, args.show_dir,
-                                  efficient_test, args.opacity, return_results=True)
-=======
         results = single_gpu_test(
             model,
             data_loader,
@@ -192,8 +188,8 @@ def main():
             args.opacity,
             pre_eval=args.eval is not None and not eval_on_format_results,
             format_only=args.format_only or eval_on_format_results,
-            format_args=eval_kwargs)
->>>>>>> upstream/master
+            format_args=eval_kwargs,
+            return_results=True)
     else:
         model = MMDistributedDataParallel(
             model.cuda(),

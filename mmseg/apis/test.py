@@ -37,15 +37,11 @@ def single_gpu_test(model,
                     out_dir=None,
                     efficient_test=False,
                     opacity=0.5,
-<<<<<<< HEAD
-                    return_results=True):
-    """Test with single GPU.
-=======
                     pre_eval=False,
                     format_only=False,
-                    format_args={}):
+                    format_args={},
+                    return_results=True):
     """Test with single GPU by progressive mode.
->>>>>>> upstream/master
 
     Args:
         model (nn.Module): Model to be tested.
@@ -94,8 +90,6 @@ def single_gpu_test(model,
     for batch_indices, data in zip(loader_indices, data_loader):
         with torch.no_grad():
             result = model(return_loss=False, **data)
-<<<<<<< HEAD
-=======
 
         if efficient_test:
             result = [np2tmp(_, tmpdir='.efficient_test') for _ in result]
@@ -110,7 +104,6 @@ def single_gpu_test(model,
 
         results.extend(result)
 
->>>>>>> upstream/master
         if show or out_dir:
             img_tensor = data['img'][0]
             img_metas = data['img_metas'][0].data[0]
@@ -137,7 +130,6 @@ def single_gpu_test(model,
                     out_file=out_file,
                     opacity=opacity)
 
-<<<<<<< HEAD
         if return_results:
             if isinstance(result, list):
                 if efficient_test:
@@ -148,8 +140,6 @@ def single_gpu_test(model,
                     result = np2tmp(result, tmpdir='.efficient_test')
                 results.append(result)
 
-=======
->>>>>>> upstream/master
         batch_size = len(result)
         for _ in range(batch_size):
             prog_bar.update()
