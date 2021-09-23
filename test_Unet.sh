@@ -15,7 +15,7 @@ for ARCH in fcn_unet_s5-d16 deeplabv3_unet_s5-d16 pspnet_unet_s5-d16; do
     /media/ubuntu/Temp/gd/mmsegmentation/work_dirs/${CONFIG}/${CONFIG}.py \
     /media/ubuntu/Temp/gd/mmsegmentation/work_dirs/${CONFIG}/iter_40000.pth \
     --work-dir /media/ubuntu/Temp/gd/mmsegmentation/work_dirs/${CONFIG}/ \
-    --eval mDice mIoU \
+    --eval mDice mIoU mFscore \
     --out /media/ubuntu/Temp/gd/mmsegmentation/work_dirs/unet_s5-d16_256x256_40k_line512new_lr0.01/result_${ARCH}_${SIZE}.pkl
 
   done
