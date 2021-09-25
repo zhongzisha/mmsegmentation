@@ -9,6 +9,7 @@ import torch
 from mmcv.engine import collect_results_cpu, collect_results_gpu
 from mmcv.image import tensor2imgs
 from mmcv.runner import get_dist_info
+import cv2
 
 
 def np2tmp(array, temp_file_name=None, tmpdir=None):
@@ -122,6 +123,8 @@ def single_gpu_test(model,
                 else:
                     out_file = None
 
+                if out_file:
+                    cv2.imwrite(out_file.replace('.jpg', '_binary.png'), (result[0] * 255).astype(np.uint8))
                 model.module.show_result(
                     img_show,
                     result,
